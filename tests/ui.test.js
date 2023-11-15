@@ -16,6 +16,16 @@ test('Verify "Login" button is visible', async({page}) => {
     expect(isLoginButtonVisible).toBe(true);
 });
 
+test('Verify "All Books" link is visible after user login', async({page}) => {
+    await page.goto('http://localhost:3000/login');
+    await page.fill('input[name="email"]','peter@abv.bg');
+    await page.fill('input[name="password"]','123456');
+    await page.click('input[type="submit"]');
+    const AllBooksLink = await page.$('a[href="/catalog"]');
+    const isAllBooksLinkVisible = await AllBooksLink.isVisible();
+    expect(isAllBooksLinkVisible).toBe(true);
+});
+
 test('Verify "Register" button is visible', async({page}) => {
     await page.goto('http://localhost:3000');
     await page.waitForSelector('nav.navbar');
