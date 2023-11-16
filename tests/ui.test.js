@@ -103,12 +103,6 @@ test('Submit the Form with Empty Password Input Field', async({page})=>{
     expect(page.url()).toBe('http://localhost:3000/login');
 });
 
-
-
-
-
-
-
 test('Verify "Register" button is visible', async({page}) => {
     await page.goto('http://localhost:3000');
     await page.waitForSelector('nav.navbar');
@@ -116,4 +110,14 @@ test('Verify "Register" button is visible', async({page}) => {
     const isRegisterButtonVisible = await registerButton.isVisible();
     expect(isRegisterButtonVisible).toBe(true);
 
+});
+
+test('Register with valid credentials', async({page})=>{
+    await page.goto('http://localhost:3000/register');
+    await page.fill('input[name="email"]','anni@abv.bg');
+    await page.fill('input[name="password"]','123456');
+    await page.fill('input[name="confirm-pass"]','123456');
+    await page.click('input[type="submit"]');
+    await page.$('a[href="/catalog"]');
+    expect(page.url()).toBe('http://localhost:3000/catalog');
 });
