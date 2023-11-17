@@ -164,3 +164,19 @@ test('Submit the Register Form an empty password input field and valid email inp
     expect(page.url()).toBe('http://localhost:3000/register');
 });
 
+test.only('Submit the Register Form with an empty confirm password input field and valid email input field and valid password input field', async({page})=>{
+    await page.goto('http://localhost:3000/register');
+    await page.fill('input[name="email"]','petar@abv.bg');
+    await page.fill('input[name="password"]','123456');
+    await page.fill('input[name="confirm-pass"]','');
+    await page.click('input[type="submit"]');
+    await page.on('dialog', async dialog=>{
+        expect(dialog.type()).toContain('alert');
+        expect(dialog.message()).toContain('All fields are required!');
+        await dialog.accept();
+    })
+    await page.$('a[href="/register"]');
+    expect(page.url()).toBe('http://localhost:3000/register');
+});
+
+//npx playwright test tests/ui.test.js
