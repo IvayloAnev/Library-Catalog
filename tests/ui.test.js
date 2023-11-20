@@ -213,7 +213,7 @@ test('Add book with correct data', async({page}) => {
     expect(page.url()).toBe('http://localhost:3000/catalog');
 });
 
-test.only('Add book with empty title field', async({page}) => {
+test('Add book with empty title field', async({page}) => {
     await page.goto('http://localhost:3000/login');
     await page.fill('input[name="email"]','peter@abv.bg');
     await page.fill('input[name="password"]','123456');
@@ -237,7 +237,7 @@ test.only('Add book with empty title field', async({page}) => {
     expect(page.url()).toBe('http://localhost:3000/create')
 });
 
-test.only('Add book with empty description field', async({page}) => {
+test('Add book with empty description field', async({page}) => {
     await page.goto('http://localhost:3000/login');
     await page.fill('input[name="email"]','peter@abv.bg');
     await page.fill('input[name="password"]','123456');
@@ -261,7 +261,7 @@ test.only('Add book with empty description field', async({page}) => {
     expect(page.url()).toBe('http://localhost:3000/create')
 });
 
-test.only('Add book with empty image URL field', async({page}) => {
+test('Add book with empty image URL field', async({page}) => {
     await page.goto('http://localhost:3000/login');
     await page.fill('input[name="email"]','peter@abv.bg');
     await page.fill('input[name="password"]','123456');
@@ -285,5 +285,17 @@ test.only('Add book with empty image URL field', async({page}) => {
     expect(page.url()).toBe('http://localhost:3000/create')
 });
 
+test.only('Login and verify all books are displayed', async({page})=>{
+    await page.goto('http://localhost:3000/login');
+    await page.fill('input[name="email"]','peter@abv.bg');
+    await page.fill('input[name="password"]','123456');
+    await Promise.all([
+        page.click('input[type="submit"]'),
+        page.waitForURL('http://localhost:3000/catalog')
+    ]);
+    await page.waitForSelector('.dashboard');
+    const bookElements = await page.$$('.other-books-list li');
+    expect(bookElements.length).toBeGreaterThan(0);
+});
 
 //npx playwright test tests/ui.test.js
