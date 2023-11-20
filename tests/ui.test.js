@@ -302,7 +302,7 @@ test('Login and verify all books are displayed', async({page})=>{
 //you should either start the project again 
 //following the steps from the beginning of this document,
 // or add the same books after that in order for the next tests to be working properly.
-test.only('Login and verify That No Books Are Dispalyed', async({page})=>{
+test('Login and verify That No Books Are Dispalyed', async({page})=>{
     await page.goto('http://localhost:3000/login');
     await page.fill('input[name="email"]','peter@abv.bg');
     await page.fill('input[name="password"]','123456');
@@ -314,4 +314,18 @@ test.only('Login and verify That No Books Are Dispalyed', async({page})=>{
     const noBookMessage = await page.textContent('.no-books');
     expect(noBookMessage).toBe('No books in database!');
 });
+
+test.only('Login and navigate to Details page', async({page})=> {
+    await page.goto('http://localhost:3000/login');
+    await page.fill('input[name="email"]','peter@abv.bg');
+    await page.fill('input[name="password"]','123456');
+    await Promise.all([
+        page.click('input[type="submit"]'),
+        page.waitForURL('http://localhost:3000/catalog')
+    ]);
+    await page.click('.otherBooks a.button');
+    await page.waitForSelector('.book-information')
+    const detailsPageTitle = await page.textContent('.book-information h3');
+    expect(detailsPageTitle).toBe('Test Book');
+})
 //npx playwright test tests/ui.test.js
