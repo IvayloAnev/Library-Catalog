@@ -90,7 +90,7 @@ test('Submit the Login Form with Empty Email Input Field', async({page})=>{
     expect(page.url()).toBe('http://localhost:3000/login');
 });
 
-test('Submit the Form with Empty Password Input Field', async({page})=>{
+test('Submit the Login Form with Empty Password Input Field', async({page})=>{
     await page.goto('http://localhost:3000/login');
     await page.fill('input[name="email"]','peter@abv.bg');
     await page.click('input[type="submit"]');
@@ -192,6 +192,25 @@ test('Submit the Register Formvalid email, but different passwords in the two pa
     })
     await page.$('a[href="/register"]');
     expect(page.url()).toBe('http://localhost:3000/register');
+});
+
+test.only('Add book with correct data', async({page}) => {
+    await page.goto('http://localhost:3000/login');
+    await page.fill('input[name="email"]','peter@abv.bg');
+    await page.fill('input[name="password"]','123456');
+    await Promise.all([
+        page.click('input[type="submit"]'),
+        page.waitForURL('http://localhost:3000/catalog')
+    ]);
+    await page.click('a[href="/create"]');
+    await page.waitForSelector('#create-form');
+    await page.fill('#title', 'Test Book');
+    await page.fill('#description', 'This is a test book description');
+    await page.fill('#image', 'https://example.com/book-image.jpg');
+    await page.selectOption('#type', 'Fiction');
+    await page.click('#create-form input[type="submit"]');
+    await page.waitForURL('http://localhost:3000/catalog');
+    expect(page.url()).toBe('http://localhost:3000/catalog');
 });
 
 //npx playwright test tests/ui.test.js
