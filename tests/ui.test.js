@@ -285,7 +285,7 @@ test('Add book with empty image URL field', async({page}) => {
     expect(page.url()).toBe('http://localhost:3000/create')
 });
 
-test.only('Login and verify all books are displayed', async({page})=>{
+test('Login and verify all books are displayed', async({page})=>{
     await page.goto('http://localhost:3000/login');
     await page.fill('input[name="email"]','peter@abv.bg');
     await page.fill('input[name="password"]','123456');
@@ -298,4 +298,20 @@ test.only('Login and verify all books are displayed', async({page})=>{
     expect(bookElements.length).toBeGreaterThan(0);
 });
 
+//Note that if you delete all books, 
+//you should either start the project again 
+//following the steps from the beginning of this document,
+// or add the same books after that in order for the next tests to be working properly.
+test.only('Login and verify That No Books Are Dispalyed', async({page})=>{
+    await page.goto('http://localhost:3000/login');
+    await page.fill('input[name="email"]','peter@abv.bg');
+    await page.fill('input[name="password"]','123456');
+    await Promise.all([
+        page.click('input[type="submit"]'),
+        page.waitForURL('http://localhost:3000/catalog')
+    ]);
+    await page.waitForSelector('.dashboard');
+    const noBookMessage = await page.textContent('.no-books');
+    expect(noBookMessage).toBe('No books in database!');
+});
 //npx playwright test tests/ui.test.js
