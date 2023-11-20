@@ -237,4 +237,28 @@ test.only('Add book with empty title field', async({page}) => {
     expect(page.url()).toBe('http://localhost:3000/create')
 });
 
+test.only('Add book with empty description field', async({page}) => {
+    await page.goto('http://localhost:3000/login');
+    await page.fill('input[name="email"]','peter@abv.bg');
+    await page.fill('input[name="password"]','123456');
+    await Promise.all([
+        page.click('input[type="submit"]'),
+        page.waitForURL('http://localhost:3000/catalog')
+    ]);
+    await page.click('a[href="/create"]');
+    await page.waitForSelector('#create-form');
+    await page.fill('#title', 'Test Book');
+    await page.fill('#description', '');
+    await page.fill('#image', 'https://example.com/book-image.jpg');
+    await page.selectOption('#type', 'Fiction');
+    await page.click('#create-form input[type="submit"]');
+    page.on('dialog', async dialog => {
+        expect(dialog.type()).toContain('alert');
+        expect(dialog.message()).toContain('All fields are required!');
+        await dialog.accept();
+    });
+    await page.$('a[href="/create"]');
+    expect(page.url()).toBe('http://localhost:3000/create')
+});
+
 //npx playwright test tests/ui.test.js
