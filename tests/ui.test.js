@@ -346,7 +346,25 @@ test('Navigate to the details page', async ({ page }) => {
     expect(detailsPageTitle).toBe('To Kill a Mockingbird');
 });
 
+test.only('Verify that creator have access to Edit and Delete buttons', async ({ page }) => {
+    await page.goto('http://localhost:3000/login');
+    await page.fill('input[name="email"]', 'peter@abv.bg');
+    await page.fill('input[name="password"]', '123456');
 
+    await Promise.all([
+        page.click('input[type="submit"]'),
+        page.waitForURL('http://localhost:3000/catalog')
+    ]);
+
+    await page.goto('http://localhost:3000/profile');
+
+    await page.waitForSelector('.my-books');
+    await page.click('#my-books-page > ul > li:nth-child(1) > a');
+    await page.waitForSelector('.details');
+
+    const actions = await page.$$('.actions');
+    expect(actions.length).toBeGreaterThan(0);
+});
 
 
 
