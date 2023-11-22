@@ -335,6 +335,17 @@ test('Login and navigate to the details page', async ({ page }) => {
     expect(detailsPageTitle).toBe('To Kill a Mockingbird');
 });
 
+test('Navigate to the details page', async ({ page }) => {
+    await page.goto('http://localhost:3000/catalog');
+
+    await page.waitForSelector('.otherBooks');
+    await page.click('.otherBooks a.button');
+    await page.waitForSelector('.book-information');
+
+    const detailsPageTitle = await page.textContent('.book-information h3');
+    expect(detailsPageTitle).toBe('To Kill a Mockingbird');
+});
+
 
 
 
