@@ -179,7 +179,7 @@ test('Submit the Register Form with an empty confirm password input field and va
     expect(page.url()).toBe('http://localhost:3000/register');
 });
 
-test('Submit the Register Formvalid email, but different passwords in the two password input fields', async({page})=>{
+test('Submit the Register Form valid email, but different passwords in the two password input fields', async({page})=>{
     await page.goto('http://localhost:3000/register');
     await page.fill('input[name="email"]','petar@abv.bg');
     await page.fill('input[name="password"]','123456');
@@ -193,6 +193,8 @@ test('Submit the Register Formvalid email, but different passwords in the two pa
     await page.$('a[href="/register"]');
     expect(page.url()).toBe('http://localhost:3000/register');
 });
+
+//Add book page tests
 
 test('Add book with correct data', async({page}) => {
     await page.goto('http://localhost:3000/login');
@@ -285,6 +287,8 @@ test('Add book with empty image URL field', async({page}) => {
     expect(page.url()).toBe('http://localhost:3000/create')
 });
 
+ //All books page tests
+
 test('Login and verify all books are displayed', async({page})=>{
     await page.goto('http://localhost:3000/login');
     await page.fill('input[name="email"]','peter@abv.bg');
@@ -298,10 +302,7 @@ test('Login and verify all books are displayed', async({page})=>{
     expect(bookElements.length).toBeGreaterThan(0);
 });
 
-//Note that if you delete all books, 
-//you should either start the project again 
-//following the steps from the beginning of this document,
-// or add the same books after that in order for the next tests to be working properly.
+
 test('Login and verify That No Books Are Dispalyed', async({page})=>{
     await page.goto('http://localhost:3000/login');
     await page.fill('input[name="email"]','peter@abv.bg');
@@ -315,27 +316,27 @@ test('Login and verify That No Books Are Dispalyed', async({page})=>{
     expect(noBookMessage).toBe('No books in database!');
 });
 
-test('Login and navigate to Details page', async({page})=> {
+//Details page
+test('Login and navigate to the details page', async ({ page }) => {
     await page.goto('http://localhost:3000/login');
-    await page.fill('input[name="email"]','peter@abv.bg');
-    await page.fill('input[name="password"]','123456');
+    await page.fill('input[name="email"]', 'peter@abv.bg');
+    await page.fill('input[name="password"]', '123456');
+
     await Promise.all([
         page.click('input[type="submit"]'),
         page.waitForURL('http://localhost:3000/catalog')
     ]);
+
+    await page.waitForSelector('.otherBooks');
     await page.click('.otherBooks a.button');
-    await page.waitForSelector('.book-information')
+    await page.waitForSelector('.book-information');
+
     const detailsPageTitle = await page.textContent('.book-information h3');
-    expect(detailsPageTitle).toBe('Test Book');
+    expect(detailsPageTitle).toBe('To Kill a Mockingbird');
 });
 
-test.only('Verify That Guest User Sees Details Button and Button Works Correctly', async({page})=> {
-    await page.goto('http://localhost:3000/catalog')
-    await page.click('.otherBooks a.button');
-    await page.waitForSelector('.book-information')
-    const detailsPageTitle = await page.textContent('.book-information h3');
-    expect(detailsPageTitle).toBe('Test Book');
-});
+
+
 
 
 //npx playwright test tests/ui.test.js
